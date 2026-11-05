@@ -3,7 +3,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort("RSpecはtest環境でのみ実行してください") unless Rails.env.test?
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
@@ -73,4 +73,40 @@ end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+end
+
+require "capybara/rspec"
+require "selenium-webdriver"
+
+Capybara.register_driver :remote_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument("--headless")
+  options.add_argument("--no-sandbox")
+  options.add_argument("--disable-dev-shm-usage")
+
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :remote,
+    url: "http://chrome:4444/wd/hub",
+    options: options
+  )
+end
+
+
+RSpec.configure do |config|
+  config.before(:each, type: :system) do
+    if ENV["CI"].present?
+      driven_by :selenium, using: :headless_chrome
+
+      Capybara.app_host = nil
+      Capybara.server_host = "127.0.0.1"
+      Capybara.server_port = 4000
+    else
+      driven_by :remote_chrome
+
+      Capybara.server_host = "0.0.0.0"
+      Capybara.server_port = 4000
+      Capybara.app_host = "http://web:4000"
+    end
+  end
 end

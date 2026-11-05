@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgres:16
@@ -31,6 +32,12 @@ services:
         condition: service_healthy
     stdin_open: true
     tty: true
+
+  chrome:
+    image: selenium/standalone-chrome:latest
+    shm_size: 2gb
+    environment:
+      SE_START_XVFB: "true"
 
 volumes:
   postgres_data:
