@@ -92,12 +92,22 @@ Capybara.register_driver :remote_chrome do |app|
   )
 end
 
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
-    driven_by :remote_chrome
+    if ENV["CI"].present?
+      driven_by :selenium, using: :headless_chrome
 
-    Capybara.server_host = "0.0.0.0"
-    Capybara.server_port = 4000
-    Capybara.app_host = "http://web:4000"
+      Capybara.app_host = nil
+      Capybara.server_host = "127.0.0.1"
+      Capybara.server_port = 4000
+    else
+      driven_by :remote_chrome
+
+      Capybara.server_host = "0.0.0.0"
+      Capybara.server_port = 4000
+      Capybara.app_host = "http://web:4000"
+    end
   end
 end
+
