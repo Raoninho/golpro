@@ -9,6 +9,7 @@ Rails.application.configure do
   config.hosts << "web:4000"
   config.hosts << "localhost"
   config.hosts << "www.example.com"
+  config.hosts << "127.0.0.1"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
