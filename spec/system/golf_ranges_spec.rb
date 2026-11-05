@@ -86,6 +86,8 @@ RSpec.describe "ゴルフ練習場の画面操作", type: :system do
     select "ボール単価が安い順", from: "並び替え"
     click_button "検索"
 
+    expect(page).to have_css(".grid h2", count: 2)
+
     displayed_names = page.all(".grid h2").map { |element| element.text.strip }
 
     expect(displayed_names).to eq([ yao.name, higashiosaka.name ])

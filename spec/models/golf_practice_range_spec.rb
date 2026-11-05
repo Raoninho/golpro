@@ -68,4 +68,42 @@ RSpec.describe GolfPracticeRange, type: :model do
       expect(range.minimum_ball_price).to be_nil
     end
   end
+
+  describe "#safe_official_website_url" do
+    it "HTTPSのURLはそのまま返す" do
+      range = build(:golf_practice_range, official_website_url: "https://example.com")
+
+      expect(range.safe_official_website_url).to eq("https://example.com")
+    end
+
+    it "HTTPのURLはそのまま返す" do
+      range = build(:golf_practice_range, official_website_url: "http://example.com")
+
+      expect(range.safe_official_website_url).to eq("http://example.com")
+    end
+
+    it "URLが空の場合はnilを返す" do
+      range = build(:golf_practice_range, official_website_url: nil)
+
+      expect(range.safe_official_website_url).to be_nil
+    end
+
+    it "HTTP・HTTPS以外のURLはnilを返す" do
+      range = build(:golf_practice_range, official_website_url: "javascript:alert(1)")
+
+      expect(range.safe_official_website_url).to be_nil
+    end
+
+    it "ホスト名がないURLはnilを返す" do
+      range = build(:golf_practice_range, official_website_url: "http:")
+
+      expect(range.safe_official_website_url).to be_nil
+    end
+
+    it "不正なURLの場合はnilを返す" do
+      range = build(:golf_practice_range, official_website_url: "https://example.com/invalid url")
+
+      expect(range.safe_official_website_url).to be_nil
+    end
+  end
 end
