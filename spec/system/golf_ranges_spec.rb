@@ -83,15 +83,21 @@ RSpec.describe "ゴルフ練習場の画面操作", type: :system do
 
     visit golf_ranges_path
 
+
     select "ボール単価が安い順", from: "並び替え"
     click_button "検索"
 
-    expect(page).to have_css(".grid h2", count: 2)
+    expect(page).to have_css(
+      ".grid h2",
+      text: /八尾テスト練習場|東大阪テスト練習場/,
+      count: 2
+    )
 
-    displayed_names = page.all(".grid h2").map { |element| element.text.strip }
-
-    expect(displayed_names).to eq([ yao.name, higashiosaka.name ])
+    expect(page).to have_text(
+      /#{Regexp.escape(yao.name)}.*#{Regexp.escape(higashiosaka.name)}/m
+    )
   end
+
 
 
   it "料金未登録の練習場には情報なしと表示される" do
