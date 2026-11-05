@@ -80,7 +80,9 @@
           </div>
 
           <h2 class="break-words text-lg font-bold text-green-900 sm:text-xl">
-            <%= range.name %>
+            <%= link_to range.name,
+              golf_range_path(range),
+              class: "hover:text-green-700 hover:underline" %>
           </h2>
 
           <p class="mt-3 text-sm text-gray-600">
