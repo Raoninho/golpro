@@ -446,9 +446,11 @@ range = GolfPracticeRange.find_by!(
 end
 
 # 河内ゴルフ倶楽部
-# 参考料金：1・2階とも平日・土日祝11.1円/球
+# ゴルフメドレー掲載の参考料金
+# 1・2階とも平日・土日祝11.1円/球
 # 出典：https://golf-medley.com/practice_facilities/982
-# 最新料金の確認が必要
+# 掲載情報の更新日：2024年11月21日
+# 最新料金は未確認
 
 range = GolfPracticeRange.find_by!(
   name: "河内ゴルフ倶楽部"
@@ -463,7 +465,7 @@ range = GolfPracticeRange.find_by!(
       end_time: nil
     )
 
-    price.price_per_ball = floor == 1 ? 12.0 : (600.0 / 53).round(2)
+    price.price_per_ball = 11.1
     price.save!
   end
 end
