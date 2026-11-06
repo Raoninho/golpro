@@ -106,4 +106,44 @@ RSpec.describe GolfPracticeRange, type: :model do
       expect(range.safe_official_website_url).to be_nil
     end
   end
+
+  describe ".order_by_minimum_price" do
+    it "ボール単価が安い順に練習場を取得する" do
+      expensive = create(:golf_practice_range, name: "料金が高い練習場")
+      cheap = create(:golf_practice_range, name: "料金が安い練習場")
+
+      create(:ball_price, golf_practice_range: expensive, price_per_ball: 12)
+      create(:ball_price, golf_practice_range: cheap, price_per_ball: 8)
+
+      ranges = GolfPracticeRange.where(id: [ expensive.id, cheap.id ])
+                                .order_by_minimum_price.to_a
+
+      expect(ranges).to eq([ cheap, expensive ])
+    end
+
+    it "料金が未登録の練習場を最後に表示する" do
+      unknown = create(:golf_practice_range, name: "料金未登録の練習場")
+      priced = create(:golf_practice_range, name: "料金登録済みの練習場")
+
+      create(:ball_price, golf_practice_range: priced, price_per_ball: 10)
+
+      ranges = GolfPracticeRange.where(id: [ unknown.id, priced.id ])
+                                .order_by_minimum_price.to_a
+
+      expect(ranges).to eq([ priced, unknown ])
+    end
+
+    it "最安料金が同額の場合は名前順に並べる" do
+      range_b = create(:golf_practice_range, name: "B練習場")
+      range_a = create(:golf_practice_range, name: "A練習場")
+
+      create(:ball_price, golf_practice_range: range_b, price_per_ball: 10)
+      create(:ball_price, golf_practice_range: range_a, price_per_ball: 10)
+
+      ranges = GolfPracticeRange.where(id: [ range_b.id, range_a.id ])
+                                .order_by_minimum_price.to_a
+
+      expect(ranges.map(&:name)).to eq([ "A練習場", "B練習場" ])
+    end
+  end
 end
