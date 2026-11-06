@@ -12,19 +12,7 @@ class GolfRangesController < ApplicationController
 
     # 並び替え
     if params[:sort] == "price_asc"
-      @golf_ranges = @golf_ranges
-                     .select(
-                       "golf_practice_ranges.*",
-                       "(SELECT MIN(price_per_ball) FROM ball_prices " \
-                       "WHERE ball_prices.golf_practice_range_id = golf_practice_ranges.id) AS minimum_price"
-                     )
-                     .order(
-                       Arel.sql(
-                         "minimum_price ASC NULLS LAST, " \
-                         "golf_practice_ranges.name ASC, " \
-                         "golf_practice_ranges.id ASC"
-                       )
-                     )
+      @golf_ranges = @golf_ranges.order_by_minimum_price
     else
       @golf_ranges = @golf_ranges.order(:name, :id)
     end
