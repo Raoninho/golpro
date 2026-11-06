@@ -138,4 +138,13 @@ RSpec.describe "ゴルフ練習場の検索・並び替え", type: :request do
       )
     end
   end
+
+
+    describe "存在しない練習場へのアクセス" do
+    it "404ステータスを返す" do
+      get golf_range_path(id: 999999)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end
