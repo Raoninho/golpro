@@ -7,14 +7,16 @@
     大阪府内のゴルフ練習場を比較できます。
   </p>
 
-
-  <p class="mb-6 text-sm text-gray-500">
-    全<%= @golf_ranges.size %>件
-  </p>
-
-  
 <%# 地域検索フォーム %>
 <div class="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+  <h2 class="mb-4 text-lg font-bold text-green-900">
+    練習場を検索・比較
+  </h2>
+
+  <p class="mb-5 text-sm text-gray-600">
+    地域やボール料金を条件に、自分に合った練習場を探せます。
+  </p>
+
   <%= form_with url: golf_ranges_path, method: :get, local: true do %>
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
 
@@ -30,7 +32,7 @@
             class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm" %>
       </div>
 
-        
+
       <%# 料金順の並び替え %>
       <div class="w-full sm:max-w-xs">
         <%= label_tag :sort, "並び替え", class: "mb-2 block text-sm font-semibold text-gray-700" %>
@@ -45,26 +47,47 @@
           ),
           class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm" %>
       </div>
-    
 
-      <div class="flex gap-3">
+
+      <div class="flex w-full gap-3 sm:w-auto">
         <%= submit_tag "検索",
-            class: "rounded-lg bg-green-700 px-6 py-3 text-sm font-semibold text-white hover:bg-green-800 cursor-pointer" %>
+            class: "flex-1 cursor-pointer rounded-lg bg-green-700 px-6 py-3 text-sm font-semibold text-white hover:bg-green-800 sm:flex-none" %>
 
         <%= link_to "リセット",
             golf_ranges_path,
-            class: "rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100" %>
+            class: "flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-100 sm:flex-none" %>
       </div>
+
 
     </div>
   <% end %>
 </div>
 
+<%# 検索結果と選択中の条件 %>
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+  <p class="text-lg font-bold text-gray-800">
+    検索結果：<%= @golf_ranges.size %>件
+  </p>
+
+  <div class="flex flex-wrap gap-2">
+    <% if params[:city].present? %>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+        地域：<%= params[:city] %>
+      </span>
+    <% end %>
+
+    <% if params[:sort] == "price_asc" %>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+        ボール単価が安い順
+      </span>
+    <% end %>
+  </div>
+</div>
 
   <% if @golf_ranges.any? %>
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       <% @golf_ranges.each do |range| %>
-        <div class="min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <div class="flex min-w-0 flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
 
           <%# 施設画像 %>
           <div class="mb-4 overflow-hidden rounded-lg bg-green-50">
@@ -103,7 +126,7 @@
 
           <% min_price = range.minimum_ball_price %>
 
-          <div class="mt-5 border-t border-gray-100 pt-4">
+          <div class="mt-auto border-t border-gray-100 pt-4">
             <p class="text-sm text-gray-500">
               最安ボール単価
             </p>
@@ -115,12 +138,12 @@
 
           <%= link_to "詳細を見る",
               golf_range_path(range),
-              class: "mt-5 inline-block rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white hover:bg-green-800" %>
+              class: "mt-5 block rounded-lg bg-green-700 px-5 py-3 text-center text-sm font-semibold text-white hover:bg-green-800" %>
 
         </div>
       <% end %>
     </div>
-  
+
   <% else %>
     <div class="rounded-lg bg-white p-8 text-center shadow-sm">
       <p class="text-gray-600">
